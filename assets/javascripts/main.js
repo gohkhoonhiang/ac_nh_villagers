@@ -232,8 +232,12 @@ var app = new Vue({
             return 0;
           }
         });
-        var upcoming = sorted[0];
-        vm.upcoming_birthday = { name: upcoming.name, birthday: upcoming.birthday };
+        if (sorted.length > 0) {
+          var upcoming = sorted[0];
+          vm.upcoming_birthday = { name: upcoming.name, birthday: upcoming.birthday };
+        } else {
+          vm.upcoming_birthday = {};
+        }
       }
     },
 
@@ -400,7 +404,7 @@ var app = new Vue({
     },
 
     birthday_boy_girl: function(value) {
-      if (!value || value.length === 0) { return ''; }
+      if (!value || $.isEmptyObject(value)) { return 'No data'; }
 
       return `${value.name} on ${monthAndDay(value.birthday)}`;
     },
