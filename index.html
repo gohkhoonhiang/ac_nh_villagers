@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+</head>
+<body>
+  <div id="app">
+    <v-app>
+      <v-content>
+        <v-container>
+          <v-card
+            class="mx-auto"
+            color="secondary"
+            light
+            outlined
+          >
+            <v-card-text class="font--text">
+              <p>
+                <strong>
+                This is the Animal Crossing: New Horizons complete villagers list. All data are sourced from the <a href="https://animalcrossing.fandom.com/wiki/Animal_Crossing_Wiki">Fandom Wiki</a>.
+                </strong>
+              </p>
+            </v-card-text>
+          </v-card>
+
+        </v-container>
+
+        <v-spacer></v-spacer>
+
+        <v-container>
+          <div class="sm-12">
+            <span class="subtitle-2">Current time: <strong>{{ now | time_normalized }}</strong></span>
+            <span>|</span>
+            <span class="subtitle-2">Current month: <strong>{{ now | month_name }}</strong></span>
+          </div>
+        </v-container>
+
+        <v-container>
+          <v-toolbar flat color="toolbar" light>
+            <v-toolbar-title class="header--text font-weight-black">
+              <div class="sm-12">Villagers</div>
+            </v-toolbar-title>
+          </v-toolbar>
+          <v-tabs
+            v-model="tab"
+            background-color="toolbar"
+            light
+          >
+
+            <v-tab key="villager_tab">
+              Villager
+              <v-icon left>mdi-account-multiple</v-icon>
+            </v-tab>
+            <v-tab key="personality_tab">
+              Personality 
+              <v-icon left>mdi-emoticon</v-icon>
+            </v-tab>
+            <v-tab key="help_tab">
+              Help
+              <v-icon left>mdi-help</v-icon>
+            </v-tab>
+
+            <v-tab-item key="villager_tab">
+
+              <v-card flat>
+                <v-tabs>
+                  <v-tab key="current_villager_tab">
+                    Current
+                    <v-icon left>mdi-checkbox-marked-outline</v-icon>
+                  </v-tab>
+                  <v-tab key="wish_list_villager_tab">
+                    Wish List
+                    <v-icon left>mdi-heart</v-icon>
+                  </v-tab>
+                  <v-tab key="complete_villager_tab">
+                    Complete
+                    <v-icon left>mdi-view-list</v-icon>
+                  </v-tab>
+
+                  <v-tab-item key="current_villager_tab">
+                    <v-card flat>
+                      <v-card
+                        flat
+                      >
+                        <v-card-text>
+                          <v-row>
+
+                            <v-col cols="6">
+                             <v-row>
+                               <v-select
+                                 v-model="villager_group_by"
+                                 prepend-icon="mdi-table-column-plus-after"
+                                 label="Group by"
+                                 :items="villager_group_by_keys"
+                                 clearable
+                               ></v-select>
+                             </v-row>
+                            </v-col>
+                          </v-row>
+
+                        </v-card-text>
+                      </v-card>
+
+                      <v-data-table
+                        :headers="villager_headers"
+                        :items="current_villager_data"
+                        :group-by="villager_group_by"
+                        :search="villager_search"
+                        class="elevation-1"
+                        disable-pagination
+                        hide-default-footer
+                      >
+                        <template v-slot:item.active_hours="{ item }">
+                          {{ item.active_hours | hours_range }}
+                        </template>
+
+                        <template v-slot:body.prepend>
+                          <tr>
+                            <td>
+                              <v-text-field v-model="villager_search" label="Filter name"></v-text-field>
+                            </td>
+                            <td colspan="3"></td>
+                          </tr>
+                        </template>
+                      </v-data-table>
+                    </v-card>
+                  </v-tab-item>
+
+                  <v-tab-item key="wish_list_villager_tab">
+                    <v-card flat>
+                      <v-data-table
+                        :headers="villager_headers"
+                        :items="wish_list_villager_data"
+                        class="elevation-1"
+                        disable-pagination
+                        hide-default-footer
+                      >
+                        <template v-slot:item.active_hours="{ item }">
+                          {{ item.active_hours | hours_range }}
+                        </template>
+
+                      </v-data-table>
+                    </v-card>
+                  </v-tab-item>
+
+                  <v-tab-item key="complete_villager_tab">
+                    <v-card flat>
+
+                      <v-data-table
+                        :headers="villager_headers"
+                        :items="complete_villager_data"
+                        :search="villager_search"
+                        class="elevation-1"
+                        disable-pagination
+                        hide-default-footer
+                      >
+                        <template v-slot:item.birthday="{ item }">
+                          {{ item.birthday | month_and_day }}
+                        </template>
+
+                        <template v-slot:item.active_hours="{ item }">
+                          {{ item.active_hours | hours_range }}
+                        </template>
+
+                        <template v-slot:body.prepend>
+                          <tr>
+                            <td>
+                              <v-text-field v-model="villager_search" label="Filter name"></v-text-field>
+                            </td>
+
+                            <td>
+                              <v-row align="center">
+                                <v-select
+                                  v-model="villager_sex_filter"
+                                  :items="sex_types"
+                                  clearable
+                                  label="Sex"
+                                ></v-select>
+                              </v-row>
+                            </td>
+
+                            <td>
+                              <v-row align="center">
+                                <v-select
+                                  v-model="villager_personality_filter"
+                                  :items="personality_types"
+                                  clearable
+                                  label="Personality"
+                                ></v-select>
+                              </v-row>
+                            </td>
+
+                            <td>
+                              <v-row align="center">
+                                <v-select
+                                  v-model="villager_species_filter"
+                                  :items="species_types"
+                                  clearable
+                                  label="Species"
+                                ></v-select>
+                              </v-row>
+                            </td>
+                            <td colspan="3"></td>
+
+                          </tr>
+                        </template>
+                      </v-data-table>
+                    </v-card>
+                  </v-tab-item>
+
+                </v-tabs>
+              </v-card>
+            </v-tab-item>
+
+            <v-tab-item key="personality_tab">
+
+              <v-card flat>
+                <v-tabs>
+                  <v-tab key="complete_personality_tab">
+                    Complete
+                    <v-icon left>mdi-view-list</v-icon>
+                  </v-tab>
+
+                  <v-tab-item key="complete_personality_tab">
+                    <v-card flat>
+                      <v-data-table
+                        :headers="personality_headers"
+                        :items="personality_data"
+                        class="elevation-1"
+                        disable-pagination
+                        hide-default-footer
+                      >
+                        <template v-slot:item.description_list="{ item }">
+                          <v-list
+                            color="rgba(255,255,255,0)"
+                            elevation="0"
+                            flat
+                            dense
+                          >
+                            <v-list-item
+                              v-for="(description, i) in item.description_list"
+                              :key="i"
+                            >
+                              <v-list-item-content>- {{ description }}</v-list-item-content>
+                            </v-list-item>
+                          </v-list>
+                        </template>
+
+                        <template v-slot:item.friendly_with="{ item }">
+                          <v-list
+                            color="rgba(255,255,255,0)"
+                            elevation="0"
+                            flat
+                            dense
+                          >
+                            <v-list-item
+                              v-for="(friendly, i) in item.friendly_with"
+                              :key="i"
+                            >
+                              <v-list-item-content>- {{ friendly }}</v-list-item-content>
+                            </v-list-item>
+                          </v-list>
+                        </template>
+
+                        <template v-slot:item.neutral_with="{ item }">
+                          <v-list
+                            color="rgba(255,255,255,0)"
+                            elevation="0"
+                            flat
+                            dense
+                          >
+                            <v-list-item
+                              v-for="(neutral, i) in item.neutral_with"
+                              :key="i"
+                            >
+                              <v-list-item-content>- {{ neutral }}</v-list-item-content>
+                            </v-list-item>
+                          </v-list>
+                        </template>
+
+                        <template v-slot:item.unfriendly_with="{ item }">
+                          <v-list
+                            color="rgba(255,255,255,0)"
+                            elevation="0"
+                            flat
+                            dense
+                          >
+                            <v-list-item
+                              v-for="(unfriendly, i) in item.unfriendly_with"
+                              :key="i"
+                            >
+                              <v-list-item-content>- {{ unfriendly }}</v-list-item-content>
+                            </v-list-item>
+                          </v-list>
+                        </template>
+
+                        <template v-slot:item.active_hours="{ item }">
+                          {{ item.active_hours | hours_range }}
+                        </template>
+
+                      </v-data-table>
+                    </v-card>
+                  </v-tab-item>
+                </v-tabs>
+
+              </v-card>
+            </v-tab-item>
+
+            <v-tab-item key="help_tab">
+              <v-card flat>
+                <v-container>
+                  <v-row dense>
+                    <v-col cols="12">
+                      <v-card
+                        color="secondary"
+                      >
+                        <v-card-title class="headline header--text">What is this site about?</v-card-title>
+                        <v-card-subtitle>
+                          <p>I wanted to have a view of who are my current villagers, and who are they friendly/unfriendly with.</p>
+                          <p>Additionally, I was also interested to view who are the villagers for each personality type/species, without having to navigate pages on the <a href="https://animalcrossing.fandom.com/wiki/Villager_list_(New_Horizons)" target="_blank">Wiki</a>.</p>
+                        </v-card-subtitle>
+                      </v-card>
+                    </v-col>
+                  </v-row>
+
+                  <v-row dense>
+                    <v-col cols="12">
+                      <v-card
+                        color="secondary"
+                      >
+                        <v-card-title class="headline header--text">Where do you get your data from?</v-card-title>
+                        <v-card-subtitle>
+                          <p>As mentioned in the previous answer, I got my data from the <a href="https://animalcrossing.fandom.com/wiki/Villager_list_(New_Horizons)" target="_blank">Fandom villager list</a>. The personality list is also from <a href="https://animalcrossing.fandom.com/wiki/Category:Personalities" target="_blank">Fandom</a>, but I added a summary of the personality description based on the detailed description on the Wiki pages. I also inferred the friendly/neutral/unfriendly with other personalities from the description.</p>
+                          <p>I downloaded the HTML source, normalized some values, then imported the normalized data into a Google Sheets. There, I exported the data into CSV format. With a Ruby script, I added the list of friendly/neutral/unfriendly with villagers for each villager/personality and their active hours, and write to JSON formats.</p>
+                        </v-card-subtitle>
+                      </v-card>
+                    </v-col>
+                  </v-row>
+
+                  <v-row dense>
+                    <v-col cols="12">
+                      <v-card
+                        color="secondary"
+                      >
+                        <v-card-title class="headline header--text">Which browsers are supported?</v-card-title>
+                        <v-card-subtitle>
+                          <p>This site has only been tested on Google Chrome (Version 81.0.4044.129). No guarantee that it will work on other browsers.</p>
+                        </v-card-subtitle>
+                      </v-card>
+                    </v-col>
+                  </v-row>
+
+                  <v-row dense>
+                    <v-col cols="12">
+                      <v-card
+                        color="secondary"
+                      >
+                        <v-card-title class="headline header--text">Where did you get the color scheme from?</v-card-title>
+                        <v-card-subtitle>
+                          <p>The color scheme is inspired by the <a href="https://turnipprophet.io/" target="_blank">Turnip Prophet site</a>. It's a really useful site I personally use to track my turnip prices and predict when is the best time I should sell. Go and support them!</p>
+                        </v-card-subtitle>
+                      </v-card>
+                    </v-col>
+                  </v-row>
+
+                  <v-row dense>
+                    <v-col cols="12">
+                      <v-card
+                        color="secondary"
+                      >
+                        <v-card-title class="headline header--text">How do I reset all the controls?</v-card-title>
+                        <v-card-subtitle>
+                          <p>Just simply click <v-btn text small @click="resetSettings">here</v-btn> and reload your page. :)</p>
+                        </v-card-subtitle>
+                      </v-card>
+                    </v-col>
+                  </v-row>
+                </v-container>
+              </v-card>
+            </v-tab-item>
+          </v-tabs>
+
+        </v-container>
+      </v-content>
+    </v-app>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.5.0.min.js" integrity="sha256-xNzN2a4ltkB44Mc/Jz3pT4iU1cmeR0FkXs4pru/JxaQ=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+  <script src="assets/javascripts/main.js"></script>
+  <script src="https://code.iconify.design/1/1.0.6/iconify.min.js"></script>
+</body>
+</html>
