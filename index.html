@@ -440,8 +440,8 @@
                         :search="villager_search"
                         :group-by="villager_group_by"
                         class="elevation-1"
-                        disable-pagination
-                        hide-default-footer
+                        items-per-page="20"
+                        :footer-props="{ itemsPerPageOptions: [20,50,100] }"
                       >
                         <template v-slot:item.birthday="{ item }">
                           {{ item.birthday | month_and_day }}
