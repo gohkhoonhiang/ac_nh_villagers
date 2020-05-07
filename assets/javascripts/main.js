@@ -87,6 +87,18 @@ var monthAndDay = function(value) {
   return `${month} ${day}`;
 };
 
+var sortList = function(list, sort_key) {
+  return list.sort(function(a, b) {
+    if (a[sort_key] < b[sort_key]) {
+      return -1;
+    } else if (a[sort_key] > b[sort_key]) {
+      return 1;
+    } else {
+      return 0;
+    }
+  });
+};
+
 var app = new Vue({
   el: '#app',
   vuetify: new Vuetify({
@@ -252,7 +264,7 @@ var app = new Vue({
         return;
       }
 
-      vm.current_villager_data = vm.current_villager_data.concat([villager]);
+      vm.current_villager_data = sortList(vm.current_villager_data.concat([villager]), 'name');
     },
 
     addToWishList: function(villager) {
@@ -261,7 +273,7 @@ var app = new Vue({
         return;
       }
 
-      vm.wish_list_villager_data = vm.wish_list_villager_data.concat([villager]);
+      vm.wish_list_villager_data = sortList(vm.wish_list_villager_data.concat([villager]), 'name');
     },
 
     removeFromList: function(list, item, search_key) {
