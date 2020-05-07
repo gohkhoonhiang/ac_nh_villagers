@@ -107,7 +107,7 @@ end
 # Raw data: {"personality"=>"Cranky", "description"=>"grumpy,most of the day out,self-centred,enjoy gossip about lifestyles of other villagers", "friendly_with"=>"Snooty,Jock,Cranky", "neutral_with"=>"Lazy,Normal", "unfriendly_with"=>"Peppy,Smug,Sisterly", "sleep_time"=>"5:00:00 AM", "wake_up_time"=>"10:00:00 AM"}
 #
 # will be converted to:
-# Formatted data: {"personality"=>"Cranky", "description"=>"grumpy,most of the day out,self-centred,enjoy gossip about lifestyles of other villagers", "friendly_with"=>["Snooty","Jock","Cranky"], "neutral_with"=>["Lazy","Normal"], "unfriendly_with"=>["Peppy","Smug","Sisterly"], "sleep_time"=>"5:00:00 AM", "wake_up_time"=>"10:00:00 AM", "sleep_hour"=>5, "wake_up_hour"=>10, "active_hours"=>[5, 6, 7, 8, 9, 10]}
+# Formatted data: {"personality"=>"Cranky", "description"=>"grumpy,most of the day out,self-centred,enjoy gossip about lifestyles of other villagers", "friendly_with"=>["Snooty","Jock","Cranky"], "neutral_with"=>["Lazy","Normal"], "unfriendly_with"=>["Peppy","Smug","Sisterly"], "sleep_time"=>"5:00:00 AM", "wake_up_time"=>"10:00:00 AM", "sleep_hour"=>5, "wake_up_hour"=>10, "active_hours"=>[11,12,13,14,15,16,17,18,19,20,21,22,23,0,1,2,3,4]}
 def format_personality_rows(rows)
   rows.each do |row|
     format_personality_row(row)
@@ -118,7 +118,7 @@ end
 def format_personality_row(row)
   row["sleep_hour"] = format_time(row["sleep_time"]).hour
   row["wake_up_hour"] = format_time(row["wake_up_time"]).hour
-  row["active_hours"] = extract_hours(row["sleep_hour"], row["wake_up_hour"])
+  row["active_hours"] = extract_hours(row["wake_up_hour"], row["sleep_hour"])
   row["friendly_with"] = row["friendly_with"].to_s.split(",")
   row["neutral_with"] = row["neutral_with"].to_s.split(",")
   row["unfriendly_with"] = row["unfriendly_with"].to_s.split(",")
