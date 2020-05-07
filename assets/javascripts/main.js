@@ -99,6 +99,50 @@ var sortList = function(list, sort_key) {
   });
 };
 
+var findMaxAttributesInObject = function(obj, attribute) {
+  var sorted_keys = Object.keys(obj).sort(function(a, b) {
+    if (obj[a][attribute] > obj[b][attribute]) {
+      return -1;
+    } else if (obj[a][attribute] < obj[b][attribute]) {
+      return 1;
+    } else {
+      return 0;
+    }
+  });
+  var max_key = sorted_keys[0];
+  var max_value = obj[max_key][attribute];
+
+  var max_keys = sorted_keys.filter(k => obj[k][attribute] === max_value);
+  var max_values = {};
+  max_keys.forEach(function(k) {
+    max_values[k] = obj[k];
+  });
+
+  return max_values;
+};
+
+var findMinAttributesInObject = function(obj, attribute) {
+  var sorted_keys = Object.keys(obj).sort(function(a, b) {
+    if (obj[a][attribute] < obj[b][attribute]) {
+      return -1;
+    } else if (obj[a][attribute] > obj[b][attribute]) {
+      return 1;
+    } else {
+      return 0;
+    }
+  });
+  var min_key = sorted_keys[0];
+  var min_value = obj[min_key][attribute];
+
+  var min_keys = sorted_keys.filter(k => obj[k][attribute] === min_value);
+  var min_values = {};
+  min_keys.forEach(function(k) {
+    min_values[k] = obj[k];
+  });
+
+  return min_values;
+};
+
 var app = new Vue({
   el: '#app',
   vuetify: new Vuetify({
@@ -120,6 +164,7 @@ var app = new Vue({
     this.retrieveSettings();
     this.getVillagerData();
     this.getPersonalityData();
+    this.updateCurrentFriendships();
     interval = setInterval(() => this.now = new Date(), 1000);
   },
 
@@ -141,6 +186,10 @@ var app = new Vue({
     villager_group_by: null,
 
     villager_search: '',
+    current_villager_dialog: false,
+    current_villager: {},
+    current_friendships: {},
+    friendship_leaderboard: {},
 
     villager_data: [],
     current_villager_data: [],
@@ -265,6 +314,7 @@ var app = new Vue({
       }
 
       vm.current_villager_data = sortList(vm.current_villager_data.concat([villager]), 'name');
+      vm.updateCurrentFriendships();
     },
 
     addToWishList: function(villager) {
@@ -290,11 +340,96 @@ var app = new Vue({
     removeFromCurrent: function(villager) {
       var vm = this;
       vm.current_villager_data = vm.removeFromList(vm.current_villager_data, villager, 'name');
+      vm.updateCurrentFriendships();
     },
 
     removeFromWishList: function(villager) {
       var vm = this;
       vm.wish_list_villager_data = vm.removeFromList(vm.wish_list_villager_data, villager, 'name');
+    },
+
+    updateCurrentFriendships: function() {
+      var vm = this;
+      if (vm.current_villager_data.length === 0) {
+        vm.current_friendships = {};
+        return;
+      }
+
+      var current_friendships = {};
+      var current_villagers = vm.current_villager_data;
+      var current_villager_names = current_villagers.map(v => v.name);
+
+      var friendly_list = current_villagers.flatMap(v => v.friendly_with);
+      var unfriendly_list = current_villagers.flatMap(v => v.unfriendly_with);
+
+      current_villagers.forEach(function(current_villager) {
+        var current_friendly = current_villager.friendly_with;
+        var current_neutral = current_villager.neutral_with;
+        var current_unfriendly = current_villager.unfriendly_with;
+
+        current_friendships[current_villager.name] = {
+          friendly_with: current_villager_names.filter(other => current_friendly.includes(other)),
+          neutral_with: current_villager_names.filter(other => current_neutral.includes(other)),
+          unfriendly_with: current_villager_names.filter(other => current_unfriendly.includes(other)),
+        };
+      });
+
+      vm.current_friendships = current_friendships;
+      vm.updateFriendshipLeaderboard();
+    },
+
+    updateFriendshipLeaderboard: function() {
+      var vm = this;
+      var friendship_leaderboard = {};
+
+      if (Object.keys(vm.current_friendships).length === 0) {
+        vm.friendship_leaderboard = {};
+        return;
+      }
+
+      var current_villagers = vm.current_villager_data;
+
+      var friendly_list = current_villagers.flatMap(v => v.friendly_with);
+      var unfriendly_list = current_villagers.flatMap(v => v.unfriendly_with);
+      var current_friendships = vm.current_friendships;
+
+      Object.keys(current_friendships).forEach(function(name) {
+        var friendships = current_friendships[name];
+        var friendly_with_count = friendships.friendly_with.length;
+        var neutral_with_count = friendships.neutral_with.length;
+        var unfriendly_with_count = friendships.unfriendly_with.length;
+        var friended_count = friendly_list.filter(n => n === name).length;
+        var unfriended_count = friendly_list.filter(n => n === name).length;
+
+        friendship_leaderboard[name] = {
+          friendly_with_count: friendly_with_count,
+          neutral_with_count: neutral_with_count,
+          unfriendly_with_count: unfriendly_with_count,
+          friended_count: friended_count,
+          unfriended_count: unfriended_count,
+        };
+      });
+
+      var most_popular = findMaxAttributesInObject(friendship_leaderboard, 'friended_count');
+      var most_unpopular = findMinAttributesInObject(friendship_leaderboard, 'friended_count');
+      var most_friendly = findMaxAttributesInObject(friendship_leaderboard, 'friendly_with_count');
+      var most_unfriendly = findMaxAttributesInObject(friendship_leaderboard, 'unfriendly_with_count');
+
+      vm.friendship_leaderboard = {
+        most_popular: most_popular,
+        most_unpopular: most_unpopular,
+        most_friendly: most_friendly,
+        most_unfriendly: most_unfriendly,
+      };
+    },
+
+    viewVillagerDetails: function(villager) {
+      var vm = this;
+      if (!villager) { return; }
+
+      var current_villager = villager;
+      vm.current_villager = current_villager;
+      vm.current_villager_dialog = true;
     },
 
     retrieveSettings: function() {

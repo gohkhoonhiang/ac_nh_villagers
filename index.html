@@ -58,6 +58,64 @@
         </v-container>
 
         <v-container>
+
+          <v-dialog
+            v-model="current_villager_dialog"
+            width="600"
+          >
+            <v-card>
+              <v-card-title
+                class="headline grey lighten-2"
+                primary-title
+              >
+                {{ current_villager.name }}
+              </v-card-title>
+
+              <v-card-title>Friendly with:</v-card-title>
+              <v-card-text>
+                <span v-show="((current_friendships[current_villager.name] || {}).friendly_with || []).length === 0">None</span>
+                <v-chip-group v-show="((current_friendships[current_villager.name] || {}).friendly_with || []).length > 0">
+                  <v-chip
+                    v-for="(other_name, i) in ((current_friendships[current_villager.name] || {}).friendly_with || [])"
+                    small
+                    disabled
+                  >
+                    {{ other_name }}
+                  </v-chip>
+                </v-chip-group>
+              </v-card-text>
+
+              <v-card-title>Neutral with:</v-card-title>
+              <v-card-text>
+                <span v-show="((current_friendships[current_villager.name] || {}).neutral_with || []).length === 0">None</span>
+                <v-chip-group v-show="((current_friendships[current_villager.name] || {}).neutral_with || []).length > 0">
+                  <v-chip
+                    v-for="(other_name, i) in ((current_friendships[current_villager.name] || {}).neutral_with || [])"
+                    small
+                    disabled
+                  >
+                    {{ other_name }}
+                  </v-chip>
+                </v-chip-group>
+              </v-card-text>
+
+              <v-card-title>Unfriendly with:</v-card-title>
+              <v-card-text>
+                <span v-show="((current_friendships[current_villager.name] || {}).unfriendly_with || []).length === 0">None</span>
+                <v-chip-group v-show="((current_friendships[current_villager.name] || {}).unfriendly_with || []).length > 0">
+                  <v-chip
+                    v-for="(other_name, i) in ((current_friendships[current_villager.name] || {}).unfriendly_with || [])"
+                    small
+                    disabled
+                  >
+                    {{ other_name }}
+                  </v-chip>
+                </v-chip-group>
+              </v-card-text>
+
+            </v-card>
+          </v-dialog>
+
           <v-toolbar flat color="toolbar" light>
             <v-toolbar-title class="header--text font-weight-black">
               <div class="sm-12">Villagers</div>
@@ -100,6 +158,106 @@
                   </v-tab>
 
                   <v-tab-item key="current_villager_tab">
+
+                    <v-container>
+                      <v-card
+                        class="mx-auto"
+                        color="secondary"
+                        light
+                        outlined
+                      >
+                        <v-card-text class="font--text">
+                          <div class="subtitle-1 mb-1 font-weight-bold">Friendship Stats</div>
+
+                          <v-container fluid>
+                            <v-row dense>
+                              <v-col cols="6">
+                                <v-card
+                                  color="rgba(255, 255, 255, 0)"
+                                  flat
+                                >
+                                  <v-card-text>
+                                    <div>Most popular:</div>
+                                    <v-chip-group>
+                                      <v-chip
+                                        v-for="(stats, name) in (friendship_leaderboard.most_popular || [])"
+                                        color="green"
+                                        text-color="white"
+                                        disabled
+                                      >
+                                        {{ name }} ({{ stats.friended_count }})
+                                      </v-chip>
+                                    </v-chip-group>
+                                  </v-card-text>
+                                </v-card>
+                              </v-col>
+
+                              <v-col cols="6">
+                                <v-card
+                                  color="rgba(255, 255, 255, 0)"
+                                  flat
+                                >
+                                  <v-card-text>
+                                    <div>Most unpopular:</div>
+                                    <v-chip-group>
+                                      <v-chip
+                                        v-for="(stats, name) in (friendship_leaderboard.most_unpopular || [])"
+                                        disabled
+                                      >
+                                        {{ name }} ({{ stats.friended_count }})
+                                      </v-chip>
+                                    </v-chip-group>
+                                  </v-card-text>
+                                </v-card>
+                              </v-col>
+
+                              <v-col cols="6">
+                                <v-card
+                                  color="rgba(255, 255, 255, 0)"
+                                  flat
+                                >
+                                  <v-card-text>
+                                    <div>Most friendly:</div>
+                                    <v-chip-group>
+                                      <v-chip
+                                        v-for="(stats, name) in (friendship_leaderboard.most_friendly || [])"
+                                        color="green"
+                                        text-color="white"
+                                        disabled
+                                      >
+                                        {{ name }} ({{ stats.friendly_with_count }})
+                                      </v-chip>
+                                    </v-chip-group>
+                                  </v-card-text>
+                                </v-card>
+                              </v-col>
+
+                              <v-col cols="6">
+                                <v-card
+                                  color="rgba(255, 255, 255, 0)"
+                                  flat
+                                >
+                                  <v-card-text>
+                                    <div>Most unfriendly:</div>
+                                    <v-chip-group>
+                                      <v-chip
+                                        v-for="(stats, name) in (friendship_leaderboard.most_unfriendly || [])"
+                                        disabled
+                                      >
+                                        {{ name }} ({{ stats.unfriendly_with_count }})
+                                      </v-chip>
+                                    </v-chip-group>
+                                  </v-card-text>
+                                </v-card>
+                              </v-col>
+
+                            </v-row>
+                          </v-container>
+
+                        </v-card-text>
+                      </v-card>
+                    </v-container>
+
                     <v-card flat>
                       <v-data-table
                         :headers="villager_headers"
@@ -116,6 +274,10 @@
                           {{ item.active_hours | hours_range }}
                         </template>
 
+                        <template v-slot:item.friendly_with="{ item }">
+                          {{ item.friendly_with | friendly_with }}
+                        </template>
+
                         <template v-slot:item.actions="{ item }">
                           <v-icon
                             small
@@ -123,6 +285,14 @@
                             @click="removeFromCurrent(item)"
                           >
                             mdi-delete
+                          </v-icon>
+
+                          <v-icon
+                            small
+                            class="mr-2"
+                            @click="viewVillagerDetails(item)"
+                          >
+                            mdi-eye
                           </v-icon>
                         </template>
                       </v-data-table>
