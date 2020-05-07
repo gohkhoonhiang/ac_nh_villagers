@@ -219,7 +219,9 @@ var app = new Vue({
       if (vm.current_villager_data.length === 0) {
         vm.upcoming_birthday = {};
       } else {
-        var sorted = vm.current_villager_data.sort(function(a, b) {
+        var today = new Date();
+        var upcoming_list = vm.current_villager_data.filter(v => (new Date(v.birthday) >= today));
+        var sorted = upcoming_list.sort(function(a, b) {
           var a_date = new Date(a.birthday);
           var b_date = new Date(b.birthday);
           if (a_date < b_date) {
@@ -230,8 +232,7 @@ var app = new Vue({
             return 0;
           }
         });
-        var today = new Date();
-        var upcoming = sorted.find(v => (new Date(v.birthday) >= today));
+        var upcoming = sorted[0];
         vm.upcoming_birthday = { name: upcoming.name, birthday: upcoming.birthday };
       }
     },
