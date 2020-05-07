@@ -468,7 +468,7 @@
                               </v-row>
                             </td>
 
-                            <td>
+                            <td v-show="villager_group_by !== 'personality'">
                               <v-row align="center">
                                 <v-select
                                   v-model="villager_personality_filter"
@@ -479,7 +479,7 @@
                               </v-row>
                             </td>
 
-                            <td>
+                            <td v-show="villager_group_by !== 'species'">
                               <v-row align="center">
                                 <v-select
                                   v-model="villager_species_filter"
