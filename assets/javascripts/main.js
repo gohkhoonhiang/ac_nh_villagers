@@ -191,6 +191,11 @@ var app = new Vue({
     current_friendships: {},
     friendship_leaderboard: {},
 
+    confirm_remove_current_dialog: false,
+    current_to_remove: {},
+    confirm_remove_wish_list_dialog: false,
+    wish_list_to_remove: {},
+
     villager_data: [],
     current_villager_data: [],
     wish_list_villager_data: [],
@@ -337,15 +342,50 @@ var app = new Vue({
       return list;
     },
 
-    removeFromCurrent: function(villager) {
+    promptRemoveFromCurrent: function(villager) {
       var vm = this;
+      vm.current_to_remove = villager;
+      vm.confirm_remove_current_dialog = true;
+    },
+
+    confirmRemoveFromCurrent: function() {
+      var vm = this;
+      vm.confirm_remove_current_dialog = false;
+
+      if (!vm.current_to_remove) { return; }
+
+      var villager = vm.current_to_remove;
       vm.current_villager_data = vm.removeFromList(vm.current_villager_data, villager, 'name');
       vm.updateCurrentFriendships();
     },
 
-    removeFromWishList: function(villager) {
+    cancelRemoveFromCurrent: function() {
       var vm = this;
+      vm.current_to_remove = {};
+      vm.confirm_remove_current_dialog = false;
+    },
+
+    promptRemoveFromWishList: function(villager) {
+      var vm = this;
+      vm.wish_list_to_remove = villager;
+      vm.confirm_remove_wish_list_dialog = true;
+    },
+
+    confirmRemoveFromWishList: function() {
+      var vm = this;
+      vm.confirm_remove_wish_list_dialog = false;
+
+      if (!vm.wish_list_to_remove) { return; }
+
+      var villager = vm.wish_list_to_remove;
       vm.wish_list_villager_data = vm.removeFromList(vm.wish_list_villager_data, villager, 'name');
+      vm.updateWishListFriendships();
+    },
+
+    cancelRemoveFromWishList: function() {
+      var vm = this;
+      vm.wish_list_to_remove = {};
+      vm.confirm_remove_wish_list_dialog = false;
     },
 
     updateCurrentFriendships: function() {
