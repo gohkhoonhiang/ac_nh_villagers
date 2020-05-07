@@ -136,6 +136,7 @@ var app = new Vue({
       { text: 'Birthday', filterable: false, value: 'birthday' },
       { text: 'Catchphrase', filterable: false, value: 'catchphrase' },
       { text: 'Active Hours', filterable: false, value: 'active_hours' },
+      { text: 'Actions', filterable: false, value: 'actions' },
     ],
 
     personality_data: [],
@@ -201,6 +202,50 @@ var app = new Vue({
       vm.complete_villager_data = vm.filterComplete(vm.villager_data, vm.villager_sex_filter, vm.villager_personality_filter, vm.villager_species_filter);
     },
 
+    notInList: function(list, villager) {
+      var vm = this;
+      return !list.map(v => v.name).includes(villager.name);
+    },
+
+    addToCurrent: function(villager) {
+      var vm = this;
+      if (vm.current_villager_data.map(v => v.name).includes(villager.name)) {
+        return;
+      }
+
+      vm.current_villager_data = vm.current_villager_data.concat([villager]);
+    },
+
+    addToWishList: function(villager) {
+      var vm = this;
+      if (vm.wish_list_villager_data.map(v => v.name).includes(villager.name)) {
+        return;
+      }
+
+      vm.wish_list_villager_data = vm.wish_list_villager_data.concat([villager]);
+    },
+
+    removeFromList: function(list, item, search_key) {
+      var key_list = list.map(v => v[search_key]);
+      if (key_list.includes(item[search_key])) {
+        var i = key_list.indexOf(item[search_key]);
+        list.splice(i, 1);
+        return list;
+      }
+
+      return list;
+    },
+
+    removeFromCurrent: function(villager) {
+      var vm = this;
+      vm.current_villager_data = vm.removeFromList(vm.current_villager_data, villager, 'name');
+    },
+
+    removeFromWishList: function(villager) {
+      var vm = this;
+      vm.wish_list_villager_data = vm.removeFromList(vm.wish_list_villager_data, villager, 'name');
+    },
+
     retrieveSettings: function() {
       var vm = this;
       var settings = JSON.parse(localStorage.getItem('ac_nh_villagers_settings'));
@@ -218,6 +263,8 @@ var app = new Vue({
         villager_personality_filter: vm.villager_personality_filter,
         villager_species_filter: vm.villager_species_filter,
         villager_group_by: vm.villager_group_by,
+        current_villager_data: vm.current_villager_data,
+        wish_list_villager_data: vm.wish_list_villager_data,
       };
 
       localStorage.setItem('ac_nh_villagers_settings', JSON.stringify(settings));
@@ -235,6 +282,16 @@ var app = new Vue({
       if (new_val.length > 0) {
         vm.filterVillagerData();
       }
+    },
+
+    current_villager_data: function(new_val, old_val) {
+      var vm = this;
+      vm.storeSettings();
+    },
+
+    wish_list_villager_data: function(new_val, old_val) {
+      var vm = this;
+      vm.storeSettings();
     },
 
     villager_sex_filter: function(new_val, old_val) {

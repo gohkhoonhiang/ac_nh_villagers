@@ -82,6 +82,77 @@
 
                   <v-tab-item key="current_villager_tab">
                     <v-card flat>
+                      <v-data-table
+                        :headers="villager_headers"
+                        :items="current_villager_data"
+                        :search="villager_search"
+                        class="elevation-1"
+                        disable-pagination
+                        hide-default-footer
+                      >
+                        <template v-slot:item.birthday="{ item }">
+                          {{ item.birthday | month_and_day }}
+                        </template>
+
+                        <template v-slot:item.active_hours="{ item }">
+                          {{ item.active_hours | hours_range }}
+                        </template>
+
+                        <template v-slot:item.actions="{ item }">
+                          <v-icon
+                            small
+                            class="mr-2"
+                            @click="removeFromCurrent(item)"
+                          >
+                            mdi-delete
+                          </v-icon>
+                        </template>
+                      </v-data-table>
+                    </v-card>
+                  </v-tab-item>
+
+                  <v-tab-item key="wish_list_villager_tab">
+                    <v-card flat>
+                      <v-data-table
+                        :headers="villager_headers"
+                        :items="wish_list_villager_data"
+                        class="elevation-1"
+                        disable-pagination
+                        hide-default-footer
+                      >
+                        <template v-slot:item.birthday="{ item }">
+                          {{ item.birthday | month_and_day }}
+                        </template>
+
+                        <template v-slot:item.active_hours="{ item }">
+                          {{ item.active_hours | hours_range }}
+                        </template>
+
+                        <template v-slot:item.actions="{ item }">
+                          <v-icon
+                            small
+                            class="mr-2"
+                            @click="removeFromWishList(item)"
+                          >
+                            mdi-delete
+                          </v-icon>
+                        </template>
+
+                        <template v-slot:body.prepend>
+                          <tr>
+                            <td>
+                              <v-text-field v-model="villager_search" label="Filter name"></v-text-field>
+                            </td>
+                            <td colspan="7"></td>
+                          </tr>
+                        </template>
+
+                      </v-data-table>
+                    </v-card>
+                  </v-tab-item>
+
+                  <v-tab-item key="complete_villager_tab">
+                    <v-card flat>
                       <v-card
                         flat
                       >
@@ -106,53 +177,9 @@
 
                       <v-data-table
                         :headers="villager_headers"
-                        :items="current_villager_data"
-                        :group-by="villager_group_by"
-                        :search="villager_search"
-                        class="elevation-1"
-                        disable-pagination
-                        hide-default-footer
-                      >
-                        <template v-slot:item.active_hours="{ item }">
-                          {{ item.active_hours | hours_range }}
-                        </template>
-
-                        <template v-slot:body.prepend>
-                          <tr>
-                            <td>
-                              <v-text-field v-model="villager_search" label="Filter name"></v-text-field>
-                            </td>
-                            <td colspan="3"></td>
-                          </tr>
-                        </template>
-                      </v-data-table>
-                    </v-card>
-                  </v-tab-item>
-
-                  <v-tab-item key="wish_list_villager_tab">
-                    <v-card flat>
-                      <v-data-table
-                        :headers="villager_headers"
-                        :items="wish_list_villager_data"
-                        class="elevation-1"
-                        disable-pagination
-                        hide-default-footer
-                      >
-                        <template v-slot:item.active_hours="{ item }">
-                          {{ item.active_hours | hours_range }}
-                        </template>
-
-                      </v-data-table>
-                    </v-card>
-                  </v-tab-item>
-
-                  <v-tab-item key="complete_villager_tab">
-                    <v-card flat>
-
-                      <v-data-table
-                        :headers="villager_headers"
                         :items="complete_villager_data"
                         :search="villager_search"
+                        :group-by="villager_group_by"
                         class="elevation-1"
                         disable-pagination
                         hide-default-footer
@@ -207,6 +234,25 @@
 
                           </tr>
                         </template>
+
+                        <template v-slot:item.actions="{ item }">
+                          <v-icon
+                            v-if="notInList(current_villager_data, item)"
+                            small
+                            class="mr-2"
+                            @click="addToCurrent(item)"
+                          >
+                            mdi-checkbox-marked-outline
+                          </v-icon>
+                          <v-icon
+                            v-if="notInList(wish_list_villager_data, item)"
+                            small
+                            @click="addToWishList(item)"
+                          >
+                            mdi-heart
+                          </v-icon>
+                        </template>
+
                       </v-data-table>
                     </v-card>
                   </v-tab-item>
