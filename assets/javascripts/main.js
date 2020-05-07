@@ -77,6 +77,16 @@ var generateDate = function(time_value) {
   return new Date(year, month, day, hour, minute, 0);
 };
 
+var monthAndDay = function(value) {
+  if (!value) { return ''; }
+
+  var d = new Date(value)
+  var month = new Intl.DateTimeFormat('en', { month: 'short' }).format(d)
+  var day = new Intl.DateTimeFormat('en', { day: 'numeric' }).format(d)
+
+  return `${month} ${day}`;
+};
+
 var app = new Vue({
   el: '#app',
   vuetify: new Vuetify({
@@ -108,6 +118,8 @@ var app = new Vue({
     personality_types: personality_types,
     species_types: species_types,
     tab: null,
+
+    upcoming_birthday: {},
 
     villager_sex_filter: null,
     villager_personality_filter: null,
@@ -202,6 +214,28 @@ var app = new Vue({
       vm.complete_villager_data = vm.filterComplete(vm.villager_data, vm.villager_sex_filter, vm.villager_personality_filter, vm.villager_species_filter);
     },
 
+    updateUpcomingBirthday: function() {
+      var vm = this;
+      if (vm.current_villager_data.length === 0) {
+        vm.upcoming_birthday = {};
+      } else {
+        var sorted = vm.current_villager_data.sort(function(a, b) {
+          var a_date = new Date(a.birthday);
+          var b_date = new Date(b.birthday);
+          if (a_date < b_date) {
+            return -1;
+          } else if (b_date < a_date) {
+            return 1;
+          } else {
+            return 0;
+          }
+        });
+        var today = new Date();
+        var upcoming = sorted.find(v => (new Date(v.birthday) >= today));
+        vm.upcoming_birthday = { name: upcoming.name, birthday: upcoming.birthday };
+      }
+    },
+
     notInList: function(list, villager) {
       var vm = this;
       return !list.map(v => v.name).includes(villager.name);
@@ -286,6 +320,7 @@ var app = new Vue({
 
     current_villager_data: function(new_val, old_val) {
       var vm = this;
+      vm.updateUpcomingBirthday();
       vm.storeSettings();
     },
 
@@ -360,11 +395,13 @@ var app = new Vue({
     },
 
     month_and_day: function(value) {
-      var d = new Date(value)
-      var month = new Intl.DateTimeFormat('en', { month: 'short' }).format(d)
-      var day = new Intl.DateTimeFormat('en', { day: 'numeric' }).format(d)
+      return monthAndDay(value);
+    },
 
-      return `${month} ${day}`;
+    birthday_boy_girl: function(value) {
+      if (!value || value.length === 0) { return ''; }
+
+      return `${value.name} on ${monthAndDay(value.birthday)}`;
     },
 
   },

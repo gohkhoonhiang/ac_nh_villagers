@@ -38,6 +38,25 @@
           </div>
         </v-container>
 
+        <v-spacer></v-spacer>
+
+        <v-container>
+          <v-card
+            class="mx-auto"
+            color="error"
+            light
+            outlined
+          >
+            <v-card-text class="white--text">
+              <p class="headline">
+                <strong>
+                  Upcoming Birthday On Your Island: {{ upcoming_birthday | birthday_boy_girl }}
+                </strong>
+              </p>
+            </v-card-text>
+          </v-card>
+        </v-container>
+
         <v-container>
           <v-toolbar flat color="toolbar" light>
             <v-toolbar-title class="header--text font-weight-black">
