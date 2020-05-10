@@ -411,29 +411,142 @@
                   </v-tab-item>
 
                   <v-tab-item key="complete_villager_tab">
-                    <v-card flat>
+                    <v-container>
                       <v-card
+                        class="mx-auto"
+                        color="secondary"
                         flat
                       >
-                        <v-card-text>
+                        <v-container fluid>
                           <v-row>
-
-                            <v-col cols="6">
-                             <v-row>
-                               <v-select
-                                 v-model="villager_group_by"
-                                 prepend-icon="mdi-table-column-plus-after"
-                                 label="Group by"
-                                 :items="villager_group_by_keys"
-                                 clearable
-                               ></v-select>
-                             </v-row>
+                            <v-col cols="12">
+                              <v-card
+                                 color="rgba(255, 255, 255, 0)"
+                                 flat
+                              >
+                                <v-card-text>
+                                  <v-select
+                                    v-model="villager_group_by"
+                                    prepend-icon="mdi-table-column-plus-after"
+                                    :items="villager_group_by_keys"
+                                    label="Group by"
+                                    clearable
+                                    dense
+                                  ></v-select>
+                                </v-card-text>
+                              </v-card>
                             </v-col>
                           </v-row>
+                        </v-container>
 
+                        <v-card-text class="font--text">
+                          <div class="subtitle-1 mb-1 font-weight-bold">Filters</div>
                         </v-card-text>
-                      </v-card>
 
+                        <v-container fluid>
+                          <v-row dense>
+                            <v-col
+                              cols="12"
+                              :xl="3"
+                              :lg="3"
+                              :md="3"
+                              :sm="12"
+                              :xs="12"
+                            >
+                              <v-card
+                                color="rgba(255, 255, 255, 0)"
+                                flat
+                              >
+                                <v-card-text>
+                                  <v-text-field
+                                    v-model="villager_search"
+                                    label="Filter name"
+                                    clearable
+                                    dense
+                                  ></v-text-field>
+                                </v-card-text>
+                              </v-card>
+                            </v-col>
+
+                            <v-col
+                              cols="12"
+                              :xl="3"
+                              :lg="3"
+                              :md="3"
+                              :sm="12"
+                              :xs="12"
+                            >
+                              <v-card
+                                color="rgba(255, 255, 255, 0)"
+                                flat
+                              >
+                                <v-card-text>
+                                  <v-select
+                                    v-model="villager_sex_filter"
+                                    :items="sex_types"
+                                    label="Sex"
+                                    clearable
+                                    dense
+                                  ></v-select>
+                                </v-card-text>
+                              </v-card>
+                            </v-col>
+
+                            <v-col
+                              cols="12"
+                              :xl="3"
+                              :lg="3"
+                              :md="3"
+                              :sm="12"
+                              :xs="12"
+                            >
+                              <v-card
+                                color="rgba(255, 255, 255, 0)"
+                                flat
+                              >
+                                <v-card-text>
+                                  <v-select
+                                    v-model="villager_personality_filter"
+                                    :items="personality_types"
+                                    label="Personality"
+                                    clearable
+                                    dense
+                                  ></v-select>
+                                </v-card-text>
+                              </v-card>
+                            </v-col>
+
+                            <v-col
+                              cols="12"
+                              :xl="3"
+                              :lg="3"
+                              :md="3"
+                              :sm="12"
+                              :xs="12"
+                            >
+                              <v-card
+                                color="rgba(255, 255, 255, 0)"
+                                flat
+                              >
+                                <v-card-text>
+                                  <v-select
+                                    v-model="villager_species_filter"
+                                    :items="species_types"
+                                    label="Species"
+                                    clearable
+                                    dense
+                                  ></v-select>
+                                </v-card-text>
+                              </v-card>
+                            </v-col>
+
+                          </v-row>
+                        </v-container>
+
+                      </v-card>
+                    </v-container>
+
+                    <v-card flat>
                       <v-data-table
                         :headers="villager_headers"
                         :items="complete_villager_data"
@@ -449,49 +562,6 @@
 
                         <template v-slot:item.active_hours="{ item }">
                           {{ item.active_hours | hours_range }}
-                        </template>
-
-                        <template v-slot:body.prepend>
-                          <tr>
-                            <td>
-                              <v-text-field v-model="villager_search" label="Filter name" clearable></v-text-field>
-                            </td>
-
-                            <td>
-                              <v-row align="center">
-                                <v-select
-                                  v-model="villager_sex_filter"
-                                  :items="sex_types"
-                                  clearable
-                                  label="Sex"
-                                ></v-select>
-                              </v-row>
-                            </td>
-
-                            <td v-show="villager_group_by !== 'personality'">
-                              <v-row align="center">
-                                <v-select
-                                  v-model="villager_personality_filter"
-                                  :items="personality_types"
-                                  clearable
-                                  label="Personality"
-                                ></v-select>
-                              </v-row>
-                            </td>
-
-                            <td v-show="villager_group_by !== 'species'">
-                              <v-row align="center">
-                                <v-select
-                                  v-model="villager_species_filter"
-                                  :items="species_types"
-                                  clearable
-                                  label="Species"
-                                ></v-select>
-                              </v-row>
-                            </td>
-                            <td colspan="4"></td>
-
-                          </tr>
                         </template>
 
                         <template v-slot:item.actions="{ item }">
