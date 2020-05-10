@@ -451,6 +451,45 @@
                   </v-tab-item>
 
                   <v-tab-item key="wish_list_villager_tab">
+                    <v-container>
+                      <v-card
+                        class="mx-auto"
+                        color="secondary"
+                        flat
+                      >
+                        <v-card-text class="font--text">
+                          <div class="subtitle-1 mb-1 font-weight-bold">Filters</div>
+                        </v-card-text>
+
+                        <v-container fluid>
+                          <v-row dense>
+                            <v-col
+                              cols="12"
+                              :xl="3"
+                              :lg="3"
+                              :md="3"
+                              :sm="12"
+                              :xs="12"
+                            >
+                              <v-card
+                                color="rgba(255, 255, 255, 0)"
+                                flat
+                              >
+                                <v-card-text>
+                                  <v-text-field
+                                    v-model="villager_search"
+                                    label="Filter name"
+                                    clearable
+                                    dense
+                                  ></v-text-field>
+                                </v-card-text>
+                              </v-card>
+                            </v-col>
+                          </v-row>
+                        </v-container>
+                      </v-card>
+                    </v-container>
+
                     <v-card flat>
                       <v-data-table
                         :headers="villager_headers"
@@ -475,15 +514,6 @@
                           >
                             mdi-delete
                           </v-icon>
-                        </template>
-
-                        <template v-slot:body.prepend>
-                          <tr>
-                            <td>
-                              <v-text-field v-model="villager_search" label="Filter name" clearable></v-text-field>
-                            </td>
-                            <td colspan="7"></td>
-                          </tr>
                         </template>
 
                       </v-data-table>
