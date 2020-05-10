@@ -191,6 +191,9 @@ var app = new Vue({
     current_friendships: {},
     friendship_leaderboard: {},
 
+    current_personality_dialog: false,
+    current_personality: {},
+
     confirm_remove_current_dialog: false,
     current_to_remove: {},
     confirm_remove_wish_list_dialog: false,
@@ -231,6 +234,7 @@ var app = new Vue({
       { text: 'Neutral With', filterable: false, value: 'neutral_with' },
       { text: 'Unfriendly With', filterable: false, value: 'unfriendly_with' },
       { text: 'Active Hours', filterable: false, value: 'active_hours' },
+      { text: 'Actions', filterable: false, value: 'actions' },
     ],
 
   },
@@ -469,6 +473,15 @@ var app = new Vue({
       var current_villager = villager;
       vm.current_villager = current_villager;
       vm.current_villager_dialog = true;
+    },
+
+    viewPersonalityDetails: function(personality) {
+      var vm = this;
+      if (!personality) { return; }
+
+      var current_personality = personality;
+      vm.current_personality = current_personality;
+      vm.current_personality_dialog = true;
     },
 
     retrieveSettings: function() {
