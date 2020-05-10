@@ -564,9 +564,9 @@
                           <v-row dense>
                             <v-col
                               cols="12"
-                              :xl="3"
-                              :lg="3"
-                              :md="3"
+                              :xl="6"
+                              :lg="6"
+                              :md="6"
                               :sm="12"
                               :xs="12"
                             >
@@ -587,9 +587,9 @@
 
                             <v-col
                               cols="12"
-                              :xl="3"
-                              :lg="3"
-                              :md="3"
+                              :xl="6"
+                              :lg="6"
+                              :md="6"
                               :sm="12"
                               :xs="12"
                             >
@@ -608,12 +608,14 @@
                                 </v-card-text>
                               </v-card>
                             </v-col>
+                          </v-row>
 
+                          <v-row dense>
                             <v-col
                               cols="12"
-                              :xl="3"
-                              :lg="3"
-                              :md="3"
+                              :xl="6"
+                              :lg="6"
+                              :md="6"
                               :sm="12"
                               :xs="12"
                             >
@@ -626,6 +628,8 @@
                                     v-model="villager_personality_filter"
                                     :items="personality_types"
                                     label="Personality"
+                                    multiple
+                                    chips
                                     clearable
                                     dense
                                   ></v-select>
@@ -635,9 +639,9 @@
 
                             <v-col
                               cols="12"
-                              :xl="3"
-                              :lg="3"
-                              :md="3"
+                              :xl="6"
+                              :lg="6"
+                              :md="6"
                               :sm="12"
                               :xs="12"
                             >
@@ -650,6 +654,8 @@
                                     v-model="villager_species_filter"
                                     :items="species_types"
                                     label="Species"
+                                    multiple
+                                    chips
                                     clearable
                                     dense
                                   ></v-select>

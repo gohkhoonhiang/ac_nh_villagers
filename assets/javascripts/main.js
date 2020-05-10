@@ -143,6 +143,22 @@ var findMinAttributesInObject = function(obj, attribute) {
   return min_values;
 };
 
+var filterList = function(data, filter_options) {
+  return data.filter(function(row) {
+    return filter_options.reduce(function(condition, filter_option) {
+      var filter_key = filter_option.key;
+      var filter_val = filter_option.val;
+      var filter_type = filter_option.type;
+      if (filter_type === 'multiple') {
+        condition = condition && (!filter_val || filter_val.length === 0 || filter_val.includes(row[filter_key]));
+      } else {
+        condition = condition && (!filter_val || row[filter_key] === filter_val);
+      }
+      return condition;
+    }, true);
+  });
+};
+
 var app = new Vue({
   el: '#app',
   vuetify: new Vuetify({
@@ -179,8 +195,8 @@ var app = new Vue({
     upcoming_birthday: {},
 
     villager_sex_filter: null,
-    villager_personality_filter: null,
-    villager_species_filter: null,
+    villager_personality_filter: [],
+    villager_species_filter: [],
 
     villager_group_by_keys: ['personality', 'species'],
     villager_group_by: null,
@@ -275,7 +291,12 @@ var app = new Vue({
 
     filterComplete: function(data, sex_filter, personality_filter, species_filter) {
       var vm = this;
-      return data.filter(row => (!sex_filter || row.sex === sex_filter) && (!personality_filter || row.personality === personality_filter) && (!species_filter || row.species === species_filter));
+      var filters = [
+        { key: 'sex', val: sex_filter, type: 'single' },
+        { key: 'personality', val: personality_filter, type: 'multiple' },
+        { key: 'species', val: species_filter, type: 'multiple' },
+      ];
+      return filterList(data, filters);
     },
 
     filterVillagerData: function() {
