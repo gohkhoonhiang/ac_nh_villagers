@@ -205,6 +205,7 @@
             v-model="tab"
             background-color="toolbar"
             light
+            show-arrows
           >
 
             <v-tab key="villager_tab">
@@ -223,7 +224,9 @@
             <v-tab-item key="villager_tab">
 
               <v-card flat>
-                <v-tabs>
+                <v-tabs
+                  show-arrows
+                >
                   <v-tab key="current_villager_tab">
                     Current
                     <v-icon left>mdi-checkbox-marked-outline</v-icon>
@@ -630,7 +633,9 @@
             <v-tab-item key="personality_tab">
 
               <v-card flat>
-                <v-tabs>
+                <v-tabs
+                  show-arrows
+                >
                   <v-tab key="complete_personality_tab">
                     Complete
                     <v-icon left>mdi-view-list</v-icon>
