@@ -101,7 +101,10 @@
               <v-card-title>Friendly with:</v-card-title>
               <v-card-text>
                 <span v-show="((current_friendships[current_villager.name] || {}).friendly_with || []).length === 0">None</span>
-                <v-chip-group v-show="((current_friendships[current_villager.name] || {}).friendly_with || []).length > 0">
+                <v-chip-group
+                  v-show="((current_friendships[current_villager.name] || {}).friendly_with || []).length > 0"
+                  column
+                >
                   <v-chip
                     v-for="(other_name, i) in ((current_friendships[current_villager.name] || {}).friendly_with || [])"
                     small
@@ -115,7 +118,10 @@
               <v-card-title>Neutral with:</v-card-title>
               <v-card-text>
                 <span v-show="((current_friendships[current_villager.name] || {}).neutral_with || []).length === 0">None</span>
-                <v-chip-group v-show="((current_friendships[current_villager.name] || {}).neutral_with || []).length > 0">
+                <v-chip-group
+                  v-show="((current_friendships[current_villager.name] || {}).neutral_with || []).length > 0"
+                  column
+                >
                   <v-chip
                     v-for="(other_name, i) in ((current_friendships[current_villager.name] || {}).neutral_with || [])"
                     small
@@ -129,7 +135,10 @@
               <v-card-title>Unfriendly with:</v-card-title>
               <v-card-text>
                 <span v-show="((current_friendships[current_villager.name] || {}).unfriendly_with || []).length === 0">None</span>
-                <v-chip-group v-show="((current_friendships[current_villager.name] || {}).unfriendly_with || []).length > 0">
+                <v-chip-group
+                  v-show="((current_friendships[current_villager.name] || {}).unfriendly_with || []).length > 0"
+                  column
+                >
                   <v-chip
                     v-for="(other_name, i) in ((current_friendships[current_villager.name] || {}).unfriendly_with || [])"
                     small
@@ -242,14 +251,21 @@
 
                           <v-container fluid>
                             <v-row dense>
-                              <v-col cols="6">
+                              <v-col
+                                cols="12"
+                                :xl="6"
+                                :lg="6"
+                                :md="6"
+                                :sm="12"
+                                :xs="12"
+                              >
                                 <v-card
                                   color="rgba(255, 255, 255, 0)"
                                   flat
                                 >
                                   <v-card-text>
                                     <div>Most popular:</div>
-                                    <v-chip-group>
+                                    <v-chip-group column>
                                       <v-chip
                                         v-for="(stats, name) in (friendship_leaderboard.most_popular || [])"
                                         color="green"
@@ -263,14 +279,21 @@
                                 </v-card>
                               </v-col>
 
-                              <v-col cols="6">
+                              <v-col
+                                cols="12"
+                                :xl="6"
+                                :lg="6"
+                                :md="6"
+                                :sm="12"
+                                :xs="12"
+                              >
                                 <v-card
                                   color="rgba(255, 255, 255, 0)"
                                   flat
                                 >
                                   <v-card-text>
                                     <div>Most unpopular:</div>
-                                    <v-chip-group>
+                                    <v-chip-group column>
                                       <v-chip
                                         v-for="(stats, name) in (friendship_leaderboard.most_unpopular || [])"
                                         disabled
@@ -282,14 +305,21 @@
                                 </v-card>
                               </v-col>
 
-                              <v-col cols="6">
+                              <v-col
+                                cols="12"
+                                :xl="6"
+                                :lg="6"
+                                :md="6"
+                                :sm="12"
+                                :xs="12"
+                              >
                                 <v-card
                                   color="rgba(255, 255, 255, 0)"
                                   flat
                                 >
                                   <v-card-text>
                                     <div>Most friendly:</div>
-                                    <v-chip-group>
+                                    <v-chip-group column>
                                       <v-chip
                                         v-for="(stats, name) in (friendship_leaderboard.most_friendly || [])"
                                         color="green"
@@ -303,14 +333,21 @@
                                 </v-card>
                               </v-col>
 
-                              <v-col cols="6">
+                              <v-col
+                                cols="12"
+                                :xl="6"
+                                :lg="6"
+                                :md="6"
+                                :sm="12"
+                                :xs="12"
+                              >
                                 <v-card
                                   color="rgba(255, 255, 255, 0)"
                                   flat
                                 >
                                   <v-card-text>
                                     <div>Most unfriendly:</div>
-                                    <v-chip-group>
+                                    <v-chip-group column>
                                       <v-chip
                                         v-for="(stats, name) in (friendship_leaderboard.most_unfriendly || [])"
                                         disabled
