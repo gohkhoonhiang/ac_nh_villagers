@@ -667,51 +667,48 @@
                         </template>
 
                         <template v-slot:item.friendly_with="{ item }">
-                          <v-list
-                            color="rgba(255,255,255,0)"
-                            elevation="0"
-                            flat
-                            dense
+                          <v-chip-group
+                            column
                           >
-                            <v-list-item
+                            <v-chip
                               v-for="(friendly, i) in item.friendly_with"
                               :key="i"
+                              disabled
+                              small
                             >
-                              <v-list-item-content>- {{ friendly }}</v-list-item-content>
-                            </v-list-item>
-                          </v-list>
+                              {{ friendly }}
+                            </v-chip>
+                          </v-chip-group>
                         </template>
 
                         <template v-slot:item.neutral_with="{ item }">
-                          <v-list
-                            color="rgba(255,255,255,0)"
-                            elevation="0"
-                            flat
-                            dense
+                          <v-chip-group
+                            column
                           >
-                            <v-list-item
+                            <v-chip
                               v-for="(neutral, i) in item.neutral_with"
                               :key="i"
+                              disabled
+                              small
                             >
-                              <v-list-item-content>- {{ neutral }}</v-list-item-content>
-                            </v-list-item>
-                          </v-list>
+                              {{ neutral }}
+                            </v-chip>
+                          </v-chip-group>
                         </template>
 
                         <template v-slot:item.unfriendly_with="{ item }">
-                          <v-list
-                            color="rgba(255,255,255,0)"
-                            elevation="0"
-                            flat
-                            dense
+                          <v-chip-group
+                            column
                           >
-                            <v-list-item
+                            <v-chip
                               v-for="(unfriendly, i) in item.unfriendly_with"
                               :key="i"
+                              disabled
+                              small
                             >
-                              <v-list-item-content>- {{ unfriendly }}</v-list-item-content>
-                            </v-list-item>
-                          </v-list>
+                              {{ unfriendly }}
+                            </v-chip>
+                          </v-chip-group>
                         </template>
 
                         <template v-slot:item.active_hours="{ item }">

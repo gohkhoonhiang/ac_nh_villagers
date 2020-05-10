@@ -227,7 +227,6 @@ var app = new Vue({
         filterable: true,
         value: 'personality',
       },
-      { text: 'Description', filterable: false, value: 'description_list' },
       { text: 'Friendly With', filterable: false, value: 'friendly_with' },
       { text: 'Neutral With', filterable: false, value: 'neutral_with' },
       { text: 'Unfriendly With', filterable: false, value: 'unfriendly_with' },
