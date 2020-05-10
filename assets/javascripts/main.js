@@ -505,6 +505,14 @@ var app = new Vue({
       vm.current_personality_dialog = true;
     },
 
+    clearAllVillagerFilters: function() {
+      var vm = this;
+      vm.villager_search = '';
+      vm.villager_sex_filter = null;
+      vm.villager_personality_filter = [];
+      vm.villager_species_filter = [];
+    },
+
     retrieveSettings: function() {
       var vm = this;
       var settings = JSON.parse(localStorage.getItem('ac_nh_villagers_settings'));
