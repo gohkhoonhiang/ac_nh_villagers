@@ -259,7 +259,7 @@ var app = new Vue({
     getVillagerData: function() {
       var vm = this;
       $.ajax({
-        url: 'https://raw.githubusercontent.com/rebekahgkh/ac_nh_villagers/master/data/villagers.json',
+        url: 'https://raw.githubusercontent.com/gohkhoonhiang/ac_nh_villagers/master/data/villagers.json',
         method: 'GET'
       }).then(function (data) {
         var villager_data = JSON.parse(data).data;
@@ -275,7 +275,7 @@ var app = new Vue({
     getPersonalityData: function() {
       var vm = this;
       $.ajax({
-        url: 'https://raw.githubusercontent.com/rebekahgkh/ac_nh_villagers/master/data/personalities.json',
+        url: 'https://raw.githubusercontent.com/gohkhoonhiang/ac_nh_villagers/master/data/personalities.json',
         method: 'GET'
       }).then(function (data) {
         var personality_data = JSON.parse(data).data;
